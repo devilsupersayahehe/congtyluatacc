@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Ty Luật ACC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#7a2828',
+                            hover: '#6b2323',
+                            light: '#a73737',
+                            50: '#fcf6f6',
+                        },
+                        secondary: '#1f2b3d',
+                        background: '#f7f8fa',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    boxShadow: {
+                        soft: '0 8px 30px rgba(0,0,0,0.06)',
+                        card: '0 10px 40px -10px rgba(0,0,0,0.1)',
+                    },
+                    keyframes: {
+                        shine: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        }
+                    },
+                    animation: {
+                        shine: 'shine 1s infinite',
+                    }
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f8fa;
+            color: #1f2b3d;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+    <!-- FIX: Import Map configuration -->
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.263.1?deps=react@18.2.0,react-dom@18.2.0",
+    "framer-motion": "https://esm.sh/framer-motion@10.12.16?deps=react@18.2.0,react-dom@18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "react/": "https://esm.sh/react@^19.2.1/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- MAIN APP SCRIPT -->
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useRef } from 'react';
+        import ReactDOM from 'react-dom/client';
+        import { 
+            Briefcase, Scale, Copyright, FileSignature, Users, Building2, 
+            Calculator, Globe, HeartHandshake, ShieldCheck, Banknote, 
+            Clock, Heart, Lock, ArrowRight, Calendar, Phone, ArrowUpRight, 
+            MapPin, Mail, Quote, ChevronLeft, ChevronRight, Star, CheckCircle2
+        } from 'lucide-react';
+        import { motion, AnimatePresence } from 'framer-motion';
+
+        // --- CONSTANTS ---
+        const SERVICES = [
+            { id: 1, title: 'Tư Vấn Doanh Nghiệp', description: 'Giải pháp toàn diện từ thành lập, quản trị đến tái cấu trúc doanh nghiệp.', link: 'https://congtyluatacc.vn/tu-van-thanh-lap-doanh-nghiep/', icon: Briefcase },
+            { id: 2, title: 'Tranh Tụng', description: 'Đại diện pháp lý chuyên nghiệp trong các vụ tranh chấp dân sự, thương mại.', link: 'https://congtyluatacc.vn/luat-su-tranh-tung/', icon: Scale },
+            { id: 3, title: 'Sở Hữu Trí Tuệ', description: 'Đăng ký và bảo vệ độc quyền thương hiệu, bản quyền, sáng chế.', link: 'https://congtyluatacc.vn/tu-van-so-huu-tri-tue/', icon: Copyright },
+            { id: 4, title: 'Tư Vấn Hợp Đồng', description: 'Soạn thảo, rà soát hợp đồng đảm bảo an toàn pháp lý tối đa.', link: 'https://congtyluatacc.vn/dich-vu-tu-van-hop-dong/', icon: FileSignature },
+            { id: 5, title: 'Lao Động', description: 'Tư vấn luật lao động, xây dựng nội quy và giải quyết tranh chấp.', link: 'https://congtyluatacc.vn/luat-su-giai-quyet-tranh-chap-lao-dong/', icon: Users },
+            { id: 6, title: 'Bất Động Sản', description: 'Hỗ trợ pháp lý mua bán, chuyển nhượng và đầu tư bất động sản.', link: 'https://congtyluatacc.vn/tu-van-bat-dong-san/', icon: Building2 },
+            { id: 7, title: 'Tư Vấn Thuế', description: 'Tối ưu hóa nghĩa vụ thuế và hoạch định chiến lược tài chính.', link: 'https://congtyluatacc.vn/ke-toan-thue/dich-vu-tu-van-thue/', icon: Calculator },
+            { id: 8, title: 'Di Trú & Visa', description: 'Thủ tục visa, thẻ tạm trú, định cư cho người nước ngoài.', link: 'https://congtyluatacc.vn/dich-vu-lam-visa/', icon: Globe },
+            { id: 9, title: 'Hôn Nhân & Gia Đình', description: 'Tư vấn ly hôn, chia tài sản, quyền nuôi con và thừa kế.', link: 'https://congtyluatacc.vn/tu-van-luat-hon-nhan-gia-dinh/', icon: HeartHandshake },
+        ];
+
+        const TESTIMONIALS = [
+            { id: 1, content: "ACC đã giúp công ty chúng tôi giải quyết một vụ tranh chấp thương mại phức tạp một cách chuyên nghiệp và hiệu quả.", author: "Trần Mạnh Tâm", position: "Giám đốc, Công ty TNHH Long Dragon", image: "https://congtyluatacc.vn/wp-content/uploads/2025/07/z6771125489768_3286a30621378ec0482640033d1746ef.jpg" },
+            { id: 2, content: "Tôi rất ấn tượng với dịch vụ tư vấn hợp đồng của ACC. Họ đã giúp tôi rà soát và tối ưu hóa các điều khoản hợp đồng.", author: "Trần Thị Lan Anh", position: "Chủ doanh nghiệp cá nhân", image: "https://congtyluatacc.vn/wp-content/uploads/2025/07/smiling-young-pretty-woman-standing-looking-camera-isolated-white-background-with-copy-space-scaled.jpg" },
+            { id: 3, content: "Nhờ ACC, tôi đã hoàn thành thủ tục đăng ký sở hữu trí tuệ một cách nhanh chóng và suôn sẻ.", author: "Lê Quang Vinh", position: "Nhà sáng tạo nội dung", image: "https://congtyluatacc.vn/wp-content/uploads/2025/07/closeup-portrait-smiling-young-asian-man-scaled.jpg" },
+            { id: 4, content: "Dịch vụ tư vấn pháp luật lao động của ACC đã giúp doanh nghiệp chúng tôi xây dựng quy trình nhân sự hợp pháp.", author: "Phạm Hồng Nhung", position: "Trưởng phòng Nhân sự", image: "https://congtyluatacc.vn/wp-content/uploads/2025/07/beautiful-korean-girl-smiling-white-teeth-looking-lovely-camera-standing-white-tshirt-studio-background-scaled.jpg" },
+            { id: 5, content: "ACC đã hỗ trợ tôi trong một vụ việc liên quan đến bất động sản với sự am hiểu sâu sắc và giải pháp thực tiễn.", author: "Chị Zema", position: "Nhà đầu tư bất động sản", image: "https://congtyluatacc.vn/wp-content/uploads/2025/07/z6771196918174_f4f529ae4e54eda8b9a3e13f5cc0878e.jpg" }
+        ];
+
+        const TEAM = [
+            { category: "LUẬT SƯ", title: "HỒ THỊ HỒNG CHUNG", desc: "Luật sư Hồ Thị Hồng Chung là chuyên gia pháp lý giàu kinh nghiệm trong lĩnh vực đầu tư, đặc biệt là tư vấn thủ tục và đồng hành pháp lý cho các dự án trong và ngoài nước. Với kiến thức chuyên sâu và tác phong làm việc chuyên nghiệp, Luật sư Chung luôn mang đến cho nhà đầu tư những giải pháp pháp lý an toàn, hiệu quả và phù hợp nhất với từng mô hình kinh doanh.", tags: ["Pháp lý đầu tư", "Doanh Nghiệp", "Dự án"], img: "https://congtyluatacc.vn/wp-content/uploads/2025/11/z7271235355390_f42f8fd6ff429a1a9b6fc33cf34d0746.jpg" }, 	
+            { category: "LUẬT SƯ", title: "NGUYỄN THỊ HOÀI THẮM", desc: "Luật sư Nguyễn Thị Hoài Thắm sở hữu thế mạnh nổi bật trong việc tư vấn, soạn thảo và xử lý rủi ro liên quan đến hợp đồng. Với tư duy phân tích sắc bén và khả năng kiểm soát chi tiết cao, chị hỗ trợ doanh nghiệp tối ưu hóa quyền lợi, hạn chế tranh chấp và xây dựng hệ thống hợp đồng chặt chẽ, minh bạch trong mọi giao dịch.", tags: ["Rủi ro pháp lý", "Hợp Đồng", "Soạn thảo hợp đồng"], img: "https://congtyluatacc.vn/wp-content/uploads/2025/11/BeautyPlus-image-extender.jpeg" },
+            { category: "LUẬT SƯ", title: "TRẦN THỊ HUẾ", desc: "Luật sư Trần Thị Huế là thành viên tận tâm của đội ngũ pháp lý Công ty Luật ACC, đảm nhiệm việc hỗ trợ pháp lý tổng hợp cho khách hàng cá nhân và doanh nghiệp. Với khả năng xử lý đa dạng tình huống và tinh thần làm việc trách nhiệm, chị mang đến những giải pháp pháp lý thiết thực, dễ áp dụng và phù hợp với nhu cầu thực tế của từng khách hàng.", tags: ["Pháp lý tổng hợp", "Tư vấn pháp luật", "Hỗ trợ khách hàng"], img: "https://congtyluatacc.vn/wp-content/uploads/2025/11/z7271236585450_8c34b9a79961e364948c8519559b0489-1.jpg" },
+            { category: "LUẬT SƯ", title: "VÕ DUY TIẾN", desc: "Luật sư Võ Duy Tiến là thành viên tận tâm của đội ngũ pháp lý Công ty Luật ACC, đảm nhiệm việc hỗ trợ pháp lý tổng hợp cho khách hàng cá nhân và doanh nghiệp.", tags: ["Pháp lý tổng hợp", "Tư vấn pháp luật", "Hỗ trợ khách hàng"], img: "https://congtyluatacc.vn/wp-content/uploads/2025/12/z7312170712871_5556d40055d5aab14cc26c13769805d2.jpg" },
+        ];
+
+        const REASONS = [
+            { icon: ShieldCheck, title: "Đội ngũ luật sư giỏi", desc: "Kinh nghiệm chuyên sâu đa lĩnh vực." },
+            { icon: Banknote, title: "Chi phí hợp lý", desc: "Minh bạch, tối ưu, không phí ẩn." },
+            { icon: Clock, title: "Xử lý nhanh chóng", desc: "Tiết kiệm thời gian, đúng tiến độ." },
+            { icon: Heart, title: "Tư vấn tận tâm", desc: "Luôn lắng nghe và thấu hiểu." },
+            { icon: Lock, title: "Bảo mật tuyệt đối", desc: "Giữ bí mật mọi thông tin khách hàng." },
+        ];
+
+        const PRESS = [
+            { id: 1, title: "Top 10 công ty luật uy tín hàng đầu Việt Nam", source: "Đồng Khởi", logo: "https://congtyluatacc.vn/wp-content/uploads/2025/12/logo.png", img: "https://congtyluatacc.vn/wp-content/uploads/2025/12/cong-ty-luat1.png", link: "https://dongkhoi.baovinhlong.vn/top-10-cong-ty-luat-uy-tin-hang-dau-viet-nam-08042025-a144852.html?gidzl=ojacOrszOYB4m2LjKwTh9CF196HCyJDwsvHyDXppQ7U9aoOvIVCq8j6PUpaH_smYrPj_RcMXKtPuNxbdBm" },
+            { id: 2, title: "Top 10 Công ty Luật lớn uy tín tại Thành phố Hồ Chí Minh", source: "Biên Phòng", logo: "https://congtyluatacc.vn/wp-content/uploads/2025/12/logo-bienphong-scaled.jpg", img: "https://congtyluatacc.vn/wp-content/uploads/2025/12/98103951amimage001.jpg", link: "https://www.bienphong.com.vn/top-10-cong-ty-luat-lon-uy-tin-tai-thanh-pho-ho-chi-minh-post489193.html" },
+            { id: 3, title: "Công ty Luật ACC - Dịch vụ làm visa nhanh tại Đà Nẵng", source: "Đà Nẵng", logo: "https://congtyluatacc.vn/wp-content/uploads/2025/12/logodn.png", img: "https://congtyluatacc.vn/wp-content/uploads/2025/12/baodanang.vn-dataimages-202506-original-_images1781797_c1.jpg", link: "https://baodanang.vn/cong-ty-luat-acc-dich-vu-lam-visa-nhanh-tai-da-nang-3295645.html" },
+            { id: 4, title: "Top 10 công ty luật, văn phòng luật sư uy tín lớn tại thành phố Hồ Chí Minh", source: "Hà Nội Mới", logo: "https://congtyluatacc.vn/wp-content/uploads/2025/12/logohanoimoi.png", img: "https://congtyluatacc.vn/wp-content/uploads/2025/12/z7153216404750_51443026af8abd4efec79b82e348e497.jpg", link: "https://hanoimoi.vn/top-10-cong-ty-luat-van-phong-luat-su-uy-tin-lon-tai-thanh-pho-ho-chi-minh-720873.html?gidzl=9y5TMrfxM2Wfs5vLL65HBYxQLb9BD01-DeyE01isMtDaY5GFJZO79Zo22GyMEbycE80DM6LBZJTAM7zT9G" }
+        ];
+
+        const BRANCHES = [
+            {
+                id: 'north',
+                title: "CHI NHÁNH MIỀN BẮC",
+                address: "Tầng 5A, 298 Cầu Giấy, Phường Cầu Giấy, TP. Hà Nội.",
+                phone: "084.696.7979",
+                email: "info@accgroup.vn",
+                zalo: "Công ty ACC",
+                hotline: "1900.3330"
+            },
+            {
+                id: 'central',
+                title: "CHI NHÁNH MIỀN TRUNG",
+                address: "432 Nguyễn Tri Phương, Phường Hòa Cường, TP. Đà Nẵng.",
+                phone: "084.696.7979",
+                email: "info@accgroup.vn",
+                zalo: "Công ty ACC",
+                hotline: "1900.3330"
+                
+            },
+            {
+                id: 'south',
+                title: "CHI NHÁNH MIỀN NAM",
+                address: "Tầng 3, 39 Hoàng Việt, Phường Tân Sơn Nhất, TP. Hồ Chí Minh.",
+                phone: "084.696.7979",
+                email: "info@accgroup.vn",
+                zalo: "Công ty Luật ACC",
+                hotline: "1900.3330",
+                sub: [
+                    { label: "VP Đại Diện", address: "Tầng 4, Tòa nhà Viettel, 205A Lê Hồng Phong, TP. Vũng Tàu." },
+                    { label: "VP Đại Diện", address: "121 Đường Trần Bình Trọng, TP. Thủ Dầu Một." }
+                ]
+            }
+        ];
+
+        const NEWS_FALLBACK_IMAGE = "https://congtyluatacc.vn/wp-content/uploads/2025/07/still-life-with-scales-justice-scaled.jpg";
+
+        // --- COMPONENTS ---
+
+        const SectionTitle = ({ title, subtitle, alignment = 'center', light = false }) => {
+            return (
+                <div className={`mb-12 ${alignment === 'center' ? 'text-center' : 'text-left'}`}>
+                    <h2 className={`text-3xl md:text-4xl font-serif font-bold mb-3 ${light ? 'text-white' : 'text-secondary'}`}>
+                        {title}
+                    </h2>
+                    <div className={`w-20 h-1.5 bg-primary rounded-full mb-4 ${alignment === 'center' ? 'mx-auto' : ''}`}></div>
+                    <p className={`text-base ${light ? 'text-gray-300' : 'text-gray-600'}`}>{subtitle}</p>
+                </div>
+            );
+        };
+
+        const Hero = () => {
+            return (
+                <section className="relative w-full min-h-screen md:min-h-[85vh] flex items-center bg-[#f7f8fa] overflow-hidden">
+                    {/* Background Image Container - Updated to 65% width to reduce zoom/crop */}
+                    <div className="absolute top-0 right-0 w-full md:w-[65%] h-full z-0">
+                        <img 
+                            src="https://congtyluatacc.vn/wp-content/uploads/2025/07/still-life-with-scales-justice-scaled.jpg" 
+                            alt="Law Firm Background" 
+                            /* Updated: object-right keeps the statue visible */
+                            className="w-full h-full object-cover object-top md:object-right"
+                        />
+                        {/* Gradient overlay to ensure text readability on the left - seamless blend with section background */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f8fa] via-[#f7f8fa]/90 to-transparent md:via-[#f7f8fa]/40"></div>
+                        {/* Mobile bottom gradient for text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#f7f8fa] via-transparent to-transparent md:hidden"></div>
+                    </div>
+
+                    <div className="relative z-10 w-full max-w-[1150px] mx-auto px-6 pt-20 md:pt-0 pb-12 md:pb-0">
+                        <div className="max-w-2xl">
+                            <motion.div 
+                                initial={{ opacity: 0, x: -30 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                            >
+                                <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-white/80 backdrop-blur-sm border border-primary/20 shadow-sm">
+                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    <span className="text-primary font-bold text-xs uppercase tracking-widest">Đối tác pháp lý tin cậy</span>
+                                </div>
+                                
+                                <h1 className="text-4xl md:text-6xl font-serif font-bold text-secondary leading-tight mb-6">
+                                    Công Ty Luật <span className="text-primary">ACC</span>
+                                </h1>
+                                
+                                <p className="text-gray-800 text-lg mb-8 leading-relaxed font-normal max-w-lg">
+                                    Là đơn vị tiên phong trong lĩnh vực pháp lý tại Việt Nam, ACC cam kết mang đến giải pháp toàn diện, bảo vệ tối đa quyền lợi của khách hàng bằng sự tận tâm và chuyên nghiệp.
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+                                    <a href="tel:0846967979" className="group relative overflow-hidden flex items-center justify-center gap-3 bg-primary text-white px-8 py-4 rounded-lg font-bold shadow-lg shadow-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/40">
+                                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shine_1s_infinite]"></div>
+                                        <Phone className="w-5 h-5 relative z-10" />
+                                        <span className="relative z-10">Liên Hệ Ngay</span>
+                                        <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+                                    </a>
+
+                                    <a href="https://zalo.me/2171133625094125529" target="_blank" rel="noreferrer" className="group flex items-center justify-center gap-3 bg-white/90 backdrop-blur text-secondary border border-gray-200 px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:border-primary hover:text-primary hover:shadow-lg hover:-translate-y-1">
+                                        <Calendar className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
+                                        <span>Tư Vấn Zalo</span>
+                                    </a>
+                                </div>
+                            </motion.div>
+
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4, duration: 0.8 }}
+                                className="mt-12 pt-8 border-t border-gray-200/60 grid grid-cols-3 gap-8 max-w-lg"
+                            >
+                                <div>
+                                    <p className="text-3xl md:text-4xl font-sans font-extrabold text-primary">10K+</p>
+                                    <p className="text-xs md:text-sm text-secondary mt-1 font-semibold">Khách hàng</p>
+                                </div>
+                                <div>
+                                    <p className="text-3xl md:text-4xl font-sans font-extrabold text-primary">Nhiều</p>
+                                    <p className="text-xs md:text-sm text-secondary mt-1 font-semibold">Năm Kinh Nghiệm</p>
+                                </div>
+                                <div>
+                                    <p className="text-3xl md:text-4xl font-sans font-extrabold text-primary">100%</p>
+                                    <p className="text-xs md:text-sm text-secondary mt-1 font-semibold">Hài lòng</p>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Services = () => {
+            return (
+                <section className="py-20 bg-white relative">
+                    <div className="max-w-[1150px] mx-auto px-6">
+                        <SectionTitle 
+                            title="Dịch Vụ Pháp Lý" 
+                            subtitle="Hệ sinh thái pháp lý đa dạng, chuyên sâu, đáp ứng mọi nhu cầu." 
+                        />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {SERVICES.map((service) => (
+                                <a 
+                                    key={service.id} 
+                                    href={service.link}
+                                    className="group relative block bg-background rounded-xl p-6 border border-transparent hover:border-primary/10 overflow-hidden transform-gpu hover:-translate-y-1 transition-all duration-300 subpixel-antialiased hover:shadow-lg"
+                                    style={{ backfaceVisibility: 'hidden' }}
+                                >
+                                    <div className="absolute top-4 right-4 opacity-0 transform translate-x-2 -translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300">
+                                        <ArrowUpRight className="w-5 h-5 text-primary" />
+                                    </div>
+
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary-light scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                                    
+                                    <div className="w-12 h-12 rounded-lg bg-primary/5 text-primary flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                        <service.icon className="w-6 h-6" />
+                                    </div>
+                                    
+                                    <h3 className="text-lg font-bold text-secondary mb-2 group-hover:text-primary transition-colors pr-6">
+                                        {service.title}
+                                    </h3>
+                                    
+                                    <p className="text-gray-600 text-sm leading-relaxed">
+                                        {service.description}
+                                    </p>
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                            <a href="tel:0846967979" className="px-6 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary-hover transition-colors text-sm text-center">
+                                Tư Vấn Miễn Phí
+                            </a>
+                            <a href="https://congtyluatacc.vn/dich-vu/" className="px-6 py-3 bg-white text-primary border border-primary rounded-lg font-bold hover:bg-primary/5 transition-colors text-sm text-center">
+                                Xem Thêm Dịch Vụ
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const About = () => {
+            const checklist = [
+                'Đội ngũ luật sư hàng đầu với nhiều năm kinh nghiệm.',
+                'Quy trình làm việc chuyên nghiệp, minh bạch.',
+                'Chi phí hợp lý, không phát sinh.',
+                'Hỗ trợ 24/7, mọi lúc mọi nơi.'
+            ];
+
+            return (
+                <section className="py-20 bg-white overflow-hidden relative">
+                    <div className="absolute left-0 top-0 w-2/3 h-full bg-background -skew-x-12 -translate-x-32 z-0 hidden lg:block"></div>
+
+                    <div className="max-w-[1150px] mx-auto px-6 relative z-10">
+                        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                            
+                            <div className="w-full lg:w-1/2">
+                                <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
+                                    <img 
+                                        src="https://congtyluatacc.vn/wp-content/uploads/2025/07/still-life-with-scales-justice-1-scaled.jpg" 
+                                        alt="Về Công ty Luật ACC" 
+                                        className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-8">
+                                        <div className="text-white">
+                                            <p className="font-serif font-bold text-xl mb-1">Chuyên Nghiệp & Tận Tâm</p>
+                                            <p className="text-sm opacity-90 font-light">Cam kết bảo vệ quyền lợi khách hàng tuyệt đối.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="w-full lg:w-1/2">
+                                <h2 className="text-3xl md:text-4xl font-serif font-bold text-secondary mb-6">
+                                    Giới Thiệu Về Chúng Tôi
+                                </h2>
+                                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                                    Với đội ngũ luật sư giàu kinh nghiệm, am hiểu sâu sắc pháp luật Việt Nam và quốc tế, ACC không chỉ là đơn vị tư vấn mà còn là đối tác chiến lược, giúp khách hàng phòng ngừa rủi ro và phát triển bền vững.
+                                </p>
+
+                                <ul className="space-y-4 mb-10">
+                                    {checklist.map((item, idx) => (
+                                        <li key={idx} className="flex items-center text-secondary font-medium group">
+                                            <CheckCircle2 className="w-5 h-5 text-primary mr-3 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <a 
+                                    href="https://congtyluatacc.vn/gioi-thieu/" 
+                                    className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-primary to-primary-light text-white rounded-lg font-bold shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto"
+                                >
+                                    <span>Tìm Hiểu Thêm</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const WhyChooseUs = () => {
+            return (
+                <section className="py-20 bg-white border-y border-gray-100">
+                    <div className="max-w-[1150px] mx-auto px-6">
+                        <SectionTitle 
+                            title="Vì Sao Chọn ACC?" 
+                            subtitle="Cam kết mang đến sự an tâm tuyệt đối và hiệu quả pháp lý cao nhất." 
+                        />
+
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+                            {REASONS.map((item, idx) => (
+                                <div 
+                                    key={idx}
+                                    className="flex flex-col items-center text-center p-6 bg-background rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-primary group h-full"
+                                >
+                                    <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                        <item.icon className="w-6 h-6" />
+                                    </div>
+                                    <h3 className="text-base font-bold text-secondary mb-2">{item.title}</h3>
+                                    <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Press = () => {
+            return (
+                <section className="py-20 bg-background">
+                    <div className="max-w-[1150px] mx-auto px-6">
+                        <SectionTitle 
+                            title="Báo Chí Viết Về ACC" 
+                            subtitle="Góc nhìn từ các cơ quan truyền thông uy tín về chất lượng dịch vụ của ACC."
+                            alignment="left"
+                        />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {PRESS.map((item) => (
+                                <a 
+                                    key={item.id}
+                                    href={item.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
+                                >
+                                    <div className="h-40 overflow-hidden bg-gray-100 relative">
+                                        <img 
+                                            src={item.img} 
+                                            alt={item.title} 
+                                            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110" 
+                                        />
+                                    </div>
+                                    <div className="p-5 flex-1 flex flex-col">
+                                        <div className="h-8 mb-3 opacity-60 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0">
+                                            <img src={item.logo} alt={item.source} className="h-full object-contain object-left" />
+                                        </div>
+                                        <h3 className="text-sm font-bold text-secondary line-clamp-3 group-hover:text-primary transition-colors">
+                                            {item.title}
+                                        </h3>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Team = () => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [isTransitioning, setIsTransitioning] = useState(true);
+            const timeoutRef = useRef(null);
+
+            // Infinite Loop Logic: [Team, Team] array
+            const displayTeam = [...TEAM, ...TEAM];
+            
+            // Logic kept 100% per request, but style tweaked for mobile view clipping
+            const cardWidth = 300;
+            const gap = 24;
+            const itemWidth = cardWidth + gap;
+
+            const handleNext = () => {
+                if (!isTransitioning) return;
+
+                setCurrentIndex((prev) => {
+                    const next = prev + 1;
+                    if (next === TEAM.length) {
+                        snapTo(0, 500);
+                    }
+                    return next;
+                });
+            };
+
+            const handlePrev = () => {
+                if (!isTransitioning) return;
+
+                if (currentIndex === 0) {
+                    setIsTransitioning(false);
+                    setCurrentIndex(TEAM.length);
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            setIsTransitioning(true);
+                            setCurrentIndex(TEAM.length - 1);
+                        });
+                    });
+                } else {
+                    setCurrentIndex((prev) => prev - 1);
+                }
+            };
+
+            const snapTo = (index, delay) => {
+                timeoutRef.current = setTimeout(() => {
+                    setIsTransitioning(false);
+                    setCurrentIndex(index);
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            setIsTransitioning(true);
+                        });
+                    });
+                }, delay);
+            };
+
+            useEffect(() => {
+                return () => {
+                    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                };
+            }, []);
+
+            return (
+                <section className="py-20 bg-background overflow-hidden border-t border-gray-200">
+                    <div className="max-w-[1150px] mx-auto px-6">
+                        <SectionTitle 
+                            title="Đội Ngũ Luật Sư" 
+                            subtitle="Những gương mặt xuất sắc, tận tâm và giàu kinh nghiệm tại ACC." 
+                        />
+
+                        <div className="relative max-w-full mx-auto">
+                            <button 
+                                onClick={handlePrev}
+                                className="absolute left-0 md:-left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-lg text-secondary hover:text-primary transition-all flex items-center justify-center border border-gray-100 active:scale-95 hover:scale-110"
+                            >
+                                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                            </button>
+                            <button 
+                                onClick={handleNext}
+                                className="absolute right-0 md:-right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-lg text-secondary hover:text-primary transition-all flex items-center justify-center border border-gray-100 active:scale-95 hover:scale-110"
+                            >
+                                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                            </button>
+
+                            {/* 
+                                Updated container styles for mobile:
+                                w-[300px] mx-auto: Forces the viewing area to exactly one card width on mobile.
+                                md:w-auto md:mx-0: Resets to full width behavior on desktop.
+                            */}
+                            <div className="overflow-hidden py-4 -my-4 px-2 -mx-2 md:px-0 md:-mx-0 w-[300px] mx-auto md:w-auto md:mx-0">
+                                <div 
+                                    className="flex gap-6 will-change-transform"
+                                    style={{
+                                        transform: `translateX(-${currentIndex * itemWidth}px)`,
+                                        transition: isTransitioning ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+                                        width: 'fit-content'
+                                    }}
+                                >
+                                    {displayTeam.map((member, index) => (
+                                        <div 
+                                            key={index} 
+                                            className="flex-shrink-0 w-[300px] h-[450px] relative group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 bg-white"
+                                        >
+                                            <img 
+                                                src={member.img} 
+                                                alt={member.title} 
+                                                className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
+                                                onError={(e) => {
+                                                    const target = e.target;
+                                                    target.src = 'https://congtyluatacc.vn/wp-content/uploads/2025/11/z7271235355390_f42f8fd6ff429a1a9b6fc33cf34d0746.jpg';
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-500"></div>
+                                            
+                                            <div className="absolute bottom-0 left-0 w-full p-6 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                                <span className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-2 block opacity-90">{member.category}</span>
+                                                <h3 className="text-xl font-bold font-serif mb-2 leading-tight">{member.title}</h3>
+                                                
+                                                <div className="flex flex-wrap gap-2 mb-3">
+                                                    {member.tags.map((tag, i) => (
+                                                        <span key={i} className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded text-white border border-white/10">
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+
+                                                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500">
+                                                    <div className="overflow-hidden">
+                                                        <p className="text-xs text-gray-200 pt-3 border-t border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                                            {member.desc}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Testimonials = () => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            const nextSlide = () => {
+                setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+            };
+
+            const prevSlide = () => {
+                setCurrentIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+            };
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    nextSlide();
+                }, 8000);
+                return () => clearInterval(timer);
+            }, []);
+
+            return (
+                <section className="py-24 bg-white relative overflow-hidden">
+                    <div className="max-w-[1150px] mx-auto px-6 relative z-10">
+                        <SectionTitle 
+                            title="Khách Hàng Nói Gì?" 
+                            subtitle="Sự hài lòng của khách hàng là minh chứng rõ nhất cho chất lượng dịch vụ của ACC."
+                        />
+
+                        <div className="max-w-5xl mx-auto mt-12">
+                            <div className="relative">
+                                {/* Improved mobile navigation visibility */}
+                                <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between z-20 pointer-events-none px-2 lg:px-0 lg:-mx-16">
+                                    <button 
+                                        onClick={prevSlide}
+                                        className="pointer-events-auto p-3 rounded-full text-gray-400 hover:text-primary bg-white/80 backdrop-blur shadow-md hover:bg-white transition-all border border-gray-100"
+                                    >
+                                        <ChevronLeft className="w-6 h-6 lg:w-8 lg:h-8" />
+                                    </button>
+                                    <button 
+                                        onClick={nextSlide}
+                                        className="pointer-events-auto p-3 rounded-full text-gray-400 hover:text-primary bg-white/80 backdrop-blur shadow-md hover:bg-white transition-all border border-gray-100"
+                                    >
+                                        <ChevronRight className="w-6 h-6 lg:w-8 lg:h-8" />
+                                    </button>
+                                </div>
+
+                                <div className="relative h-[480px] sm:h-[400px] md:h-[320px]">
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={currentIndex}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            transition={{ duration: 0.4 }}
+                                            className="absolute inset-0"
+                                        >
+                                            <div className="flex flex-col md:flex-row gap-8 items-center bg-white border border-gray-100 rounded-3xl p-8 md:p-12 shadow-2xl shadow-gray-200/50 h-full">
+                                                
+                                                <div className="flex-shrink-0 relative">
+                                                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-full p-1 border-2 border-primary/20 relative z-10">
+                                                        <img 
+                                                            src={TESTIMONIALS[currentIndex].image} 
+                                                            alt={TESTIMONIALS[currentIndex].author} 
+                                                            className="w-full h-full rounded-full object-cover"
+                                                        />
+                                                    </div>
+                                                    <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-full z-20">
+                                                        <Quote className="w-4 h-4" />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="flex-1 text-center md:text-left overflow-y-auto md:overflow-visible max-h-full">
+                                                    <div className="flex justify-center md:justify-start gap-1 text-yellow-400 mb-4">
+                                                        {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4 h-4 fill-current" />)}
+                                                    </div>
+                                                    
+                                                    <p className="text-lg md:text-xl text-gray-700 leading-relaxed italic mb-6">
+                                                        "{TESTIMONIALS[currentIndex].content}"
+                                                    </p>
+                                                    
+                                                    <div className="border-t border-gray-100 pt-4">
+                                                        <h4 className="text-secondary font-bold text-lg font-serif">{TESTIMONIALS[currentIndex].author}</h4>
+                                                        <p className="text-gray-500 text-sm mt-1">{TESTIMONIALS[currentIndex].position}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center gap-2 mt-8">
+                                {TESTIMONIALS.map((_, idx) => (
+                                    <button 
+                                        key={idx}
+                                        onClick={() => setCurrentIndex(idx)}
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-gray-200 hover:bg-gray-300'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const News = () => {
+            const [posts, setPosts] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(false);
+
+            useEffect(() => {
+                const fetchNews = async () => {
+                    try {
+                        const response = await fetch('https://congtyluatacc.vn/wp-json/wp/v2/posts?per_page=6&_embed');
+                        if (!response.ok) throw new Error("Failed to fetch");
+                        const data = await response.json();
+                        setPosts(data);
+                    } catch (err) {
+                        console.error(err);
+                        setError(true);
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+
+                fetchNews();
+            }, []);
+
+            const decodeEntities = (html) => {
+                if (!html) return "";
+                const textarea = document.createElement("textarea");
+                textarea.innerHTML = html;
+                let value = textarea.value;
+                if (value.includes("&")) {
+                     const textarea2 = document.createElement("textarea");
+                     textarea2.innerHTML = value;
+                     value = textarea2.value;
+                }
+                return value;
+            };
+
+            const stripHtml = (html) => {
+                const decoded = decodeEntities(html);
+                return decoded.replace(/<[^>]*>?/gm, '');
+            };
+
+            return (
+                <section className="py-20 bg-white">
+                    <div className="max-w-[1150px] mx-auto px-6">
+                        <div className="flex justify-between items-end mb-12">
+                             <div className="text-left">
+                                <h2 className="text-3xl md:text-4xl font-serif font-bold mb-3 text-secondary">
+                                    Tin Tức Mới Nhất
+                                </h2>
+                                <div className="w-20 h-1.5 bg-primary rounded-full mb-4"></div>
+                                <p className="text-gray-600">Cập nhật kiến thức pháp lý mới nhất từ chuyên gia.</p>
+                            </div>
+                        </div>
+
+                        {loading ? (
+                            <div className="flex justify-center py-12">
+                                <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        ) : error ? (
+                            <div className="text-center py-12 text-gray-500">
+                                Không thể tải tin tức. Vui lòng truy cập <a href="https://congtyluatacc.vn/" className="text-primary underline">congtyluatacc.vn</a>.
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {posts.map((post) => {
+                                    let imgSrc = `https://source.unsplash.com/random/400x300?law,legal&sig=${post.id}`;
+                                    if (post._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
+                                        imgSrc = post._embedded['wp:featuredmedia'][0].source_url;
+                                    }
+
+                                    const cleanTitle = decodeEntities(post.title.rendered);
+                                    const cleanExcerpt = stripHtml(post.excerpt.rendered);
+
+                                    return (
+                                        <a 
+                                            key={post.id} 
+                                            href={post.link} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-hover transition-all duration-300 border border-gray-100"
+                                        >
+                                            <div className="h-48 overflow-hidden relative">
+                                                <img 
+                                                    src={imgSrc} 
+                                                    alt="Thumbnail" 
+                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                    onError={(e) => {
+                                                        const target = e.target;
+                                                        target.src = NEWS_FALLBACK_IMAGE;
+                                                    }}
+                                                />
+                                                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                                            </div>
+                                            <div className="p-6 flex flex-col flex-1">
+                                                <h3 className="text-lg font-bold text-secondary mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                                                    {cleanTitle}
+                                                </h3>
+                                                <p className="text-sm text-gray-500 line-clamp-3 mb-4 flex-1">
+                                                    {cleanExcerpt}
+                                                </p>
+                                                <div className="flex items-center text-primary font-bold text-xs uppercase tracking-wider mt-auto">
+                                                    <span>Đọc tiếp</span>
+                                                    <ArrowRight className="w-3 h-3 ml-2 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+                                                </div>
+                                            </div>
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        )}
+                        
+                        <div className="mt-8 flex justify-end">
+                             <a href="https://congtyluatacc.vn/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary border border-primary rounded-lg font-bold hover:bg-primary/5 transition-colors shadow-sm hover:shadow-md group">
+                                Xem tất cả tin tức 
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Branches = () => {
+            const [activeBranch, setActiveBranch] = useState(BRANCHES[0].id);
+
+            return (
+                <section className="py-20 bg-background">
+                    <div className="max-w-[1150px] mx-auto px-6">
+                        <SectionTitle 
+                            title="Hệ Thống Chi Nhánh" 
+                            subtitle="Mạng lưới văn phòng trải dài 3 miền Bắc - Trung - Nam, sẵn sàng hỗ trợ bạn." 
+                        />
+
+                        <div className="flex flex-col lg:flex-row gap-8 bg-white rounded-3xl p-2 shadow-card overflow-hidden border border-gray-100">
+                            
+                            <div className="flex-1 p-6 md:p-8">
+                                <div className="space-y-4">
+                                    {BRANCHES.map((branch) => {
+                                        const isActive = activeBranch === branch.id;
+                                        return (
+                                            <div 
+                                                key={branch.id}
+                                                onClick={() => setActiveBranch(branch.id)}
+                                                className={`cursor-pointer rounded-xl border-2 transition-all duration-300 p-6 ${isActive ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-100 hover:border-primary/30 bg-white'}`}
+                                            >
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <h3 className={`text-lg font-bold ${isActive ? 'text-primary' : 'text-secondary'}`}>
+                                                        {branch.title}
+                                                    </h3>
+                                                    {isActive && <span className="w-3 h-3 rounded-full bg-primary animate-pulse"></span>}
+                                                </div>
+                                                
+                                                <div className="space-y-3">
+                                                    <div className="flex items-start gap-3">
+                                                        <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                                        <p className="text-sm text-gray-700 font-medium">{branch.address}</p>
+                                                    </div>
+                                                    
+                                                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 pl-8">
+                                                        <span className="flex items-center gap-2 hover:text-primary transition-colors">
+                                                            <Phone className="w-4 h-4" />  {branch.hotline}
+                                                        </span>
+                                                        <span className="flex items-center gap-2 hover:text-primary transition-colors">
+                                                            <Mail className="w-4 h-4" /> {branch.email}
+                                                        </span>
+                                                        <span className="flex items-center gap-2 hover:text-primary transition-colors">
+                                                            <Phone className="w-4 h-4" /> {branch.phone}
+                                                        </span>
+                                                    </div>
+
+                                                    {branch.sub && (
+                                                        <div className="mt-4 pt-4 border-t border-gray-200 pl-8 space-y-2">
+                                                            {branch.sub.map((s, idx) => (
+                                                                <div key={idx} className="text-xs text-gray-500">
+                                                                    <strong className="text-primary">{s.label}:</strong> {s.address}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="lg:w-5/12 bg-secondary relative min-h-[400px] lg:min-h-auto rounded-2xl overflow-hidden m-2">
+                                <img 
+                                    src="https://congtyluatacc.vn/wp-content/uploads/2025/11/z6933744955650_3e2b5ca7454622053833438356f7269a-removebg-preview.png" 
+                                    alt="Bản đồ chi nhánh"
+                                    className="absolute inset-0 w-full h-full object-contain p-8 z-10"
+                                />
+                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent z-20">
+                                    <p className="text-white text-center text-sm font-medium">
+                                        Kết nối mọi miền tổ quốc
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-background overflow-x-hidden">
+                    <main className="flex-grow">
+                        <Hero />
+                        <Services />
+                        <About />
+                        <WhyChooseUs />
+                        <Press />
+                        <Team />
+                        <Testimonials />
+                        <News />
+                        <Branches />
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+    </script>
+</body>
+</html>
