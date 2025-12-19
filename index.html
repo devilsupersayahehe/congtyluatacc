@@ -98,7 +98,8 @@
             Briefcase, Scale, Copyright, FileSignature, Users, Building2, 
             Calculator, Globe, HeartHandshake, ShieldCheck, Banknote, 
             Clock, Heart, Lock, ArrowRight, Calendar, Phone, ArrowUpRight, 
-            MapPin, Mail, Quote, ChevronLeft, ChevronRight, Star, CheckCircle2
+            MapPin, Mail, Quote, ChevronLeft, ChevronRight, Star, CheckCircle2,
+            Map, Navigation, Building
         } from 'lucide-react';
         import { motion, AnimatePresence } from 'framer-motion';
 
@@ -145,37 +146,64 @@
             { id: 4, title: "Top 10 công ty luật, văn phòng luật sư uy tín lớn tại thành phố Hồ Chí Minh", source: "Hà Nội Mới", logo: "https://congtyluatacc.vn/wp-content/uploads/2025/12/logohanoimoi.png", img: "https://congtyluatacc.vn/wp-content/uploads/2025/12/z7153216404750_51443026af8abd4efec79b82e348e497.jpg", link: "https://hanoimoi.vn/top-10-cong-ty-luat-van-phong-luat-su-uy-tin-lon-tai-thanh-pho-ho-chi-minh-720873.html?gidzl=9y5TMrfxM2Wfs5vLL65HBYxQLb9BD01-DeyE01isMtDaY5GFJZO79Zo22GyMEbycE80DM6LBZJTAM7zT9G" }
         ];
 
+        // UPDATED BRANCHES DATA - All using commonContact and Grouped South Addresses
         const BRANCHES = [
             {
-                id: 'north',
-                title: "CHI NHÁNH MIỀN BẮC",
-                address: "Tầng 5A, 298 Cầu Giấy, Phường Cầu Giấy, TP. Hà Nội.",
-                phone: "084.696.7979",
-                email: "info@accgroup.vn",
-                zalo: "Công ty ACC",
-                hotline: "1900.3330"
+                id: 'south',
+                title: "CHI NHÁNH MIỀN NAM",
+                tag: "TRỤ SỞ CHÍNH",
+                commonContact: {
+                    hotline: "1900.3330",
+                    phone: "084.696.7979",
+                    email: "info@accgroup.vn"
+                },
+                locations: [
+                    {
+                        address: "Tầng 3, 39 Hoàng Việt, Phường Tân Sơn Nhất, TP. Hồ Chí Minh.",
+                        isMain: true 
+                    },
+                    {
+                        name: "VĂN PHÒNG ĐẠI DIỆN",
+                        addresses: [
+                            "Tầng 4, Tòa nhà Viettel, 205A Lê Hồng Phong, TP. Vũng Tàu.",
+                            "121 Đường Trần Bình Trọng, TP. Thủ Dầu Một."
+                        ]
+                    }
+                ]
             },
             {
                 id: 'central',
                 title: "CHI NHÁNH MIỀN TRUNG",
-                address: "432 Nguyễn Tri Phương, Phường Hòa Cường, TP. Đà Nẵng.",
-                phone: "084.696.7979",
-                email: "info@accgroup.vn",
-                zalo: "Công ty ACC",
-                hotline: "1900.3330"
-                
+                commonContact: {
+                    hotline: "1900.3330",
+                    phone: "084.696.7979",
+                    email: "info@accgroup.vn"
+                },
+                locations: [
+                    {
+                        address: "432 Nguyễn Tri Phương, Phường Hòa Cường, TP. Đà Nẵng."
+                    },
+                    {
+                        address: "232 Y-Jut, Phường Buôn Ma Thuột, Tỉnh Đắk Lắk."
+                    },
+                    {
+                        address: "03 Trịnh Phong, Phường Nha Trang, Tỉnh Khánh Hòa."
+                    }
+                ]
             },
             {
-                id: 'south',
-                title: "CHI NHÁNH MIỀN NAM",
-                address: "Tầng 3, 39 Hoàng Việt, Phường Tân Sơn Nhất, TP. Hồ Chí Minh.",
-                phone: "084.696.7979",
-                email: "info@accgroup.vn",
-                zalo: "Công ty Luật ACC",
-                hotline: "1900.3330",
-                sub: [
-                    { label: "VP Đại Diện", address: "Tầng 4, Tòa nhà Viettel, 205A Lê Hồng Phong, TP. Vũng Tàu." },
-                    { label: "VP Đại Diện", address: "121 Đường Trần Bình Trọng, TP. Thủ Dầu Một." }
+                id: 'north',
+                title: "CHI NHÁNH MIỀN BẮC",
+                commonContact: {
+                    hotline: "1900.3330",
+                    phone: "084.696.7979",
+                    email: "info@accgroup.vn"
+                },
+                locations: [
+                    {
+                        address: "Tầng 5A, 298 Cầu Giấy, Phường Cầu Giấy, TP. Hà Nội.",
+                        isMain: true
+                    }
                 ]
             }
         ];
@@ -199,21 +227,20 @@
         const Hero = () => {
             return (
                 <section className="relative w-full min-h-screen md:min-h-[85vh] flex items-center bg-[#f7f8fa] overflow-hidden">
-                    {/* Background Image Container - Updated to 65% width to reduce zoom/crop */}
+                    {/* Background Image Container - Updated to object-[75%] for mobile to bring the subject (on the right) into view */}
                     <div className="absolute top-0 right-0 w-full md:w-[65%] h-full z-0">
                         <img 
                             src="https://congtyluatacc.vn/wp-content/uploads/2025/07/still-life-with-scales-justice-scaled.jpg" 
                             alt="Law Firm Background" 
-                            /* Updated: object-right keeps the statue visible */
-                            className="w-full h-full object-cover object-top md:object-right"
+                            /* Fix: object-[75%] for mobile shifts view to the right side of image, bringing the subject into frame */
+                            className="w-full h-full object-cover object-[75%] md:object-right"
                         />
-                        {/* Gradient overlay to ensure text readability on the left - seamless blend with section background */}
                         <div className="absolute inset-0 bg-gradient-to-r from-[#f7f8fa] via-[#f7f8fa]/90 to-transparent md:via-[#f7f8fa]/40"></div>
-                        {/* Mobile bottom gradient for text readability */}
                         <div className="absolute inset-0 bg-gradient-to-t from-[#f7f8fa] via-transparent to-transparent md:hidden"></div>
                     </div>
 
-                    <div className="relative z-10 w-full max-w-[1150px] mx-auto px-6 pt-20 md:pt-0 pb-12 md:pb-0">
+                    {/* Fix: Reduced top padding from pt-10 to pt-4 on mobile to remove excess space */}
+                    <div className="relative z-10 w-full max-w-[1150px] mx-auto px-6 pt-4 md:pt-0 pb-12 md:pb-0">
                         <div className="max-w-2xl">
                             <motion.div 
                                 initial={{ opacity: 0, x: -30 }}
@@ -825,82 +852,109 @@
         };
 
         const Branches = () => {
-            const [activeBranch, setActiveBranch] = useState(BRANCHES[0].id);
-
             return (
-                <section className="py-20 bg-background">
-                    <div className="max-w-[1150px] mx-auto px-6">
+                <section className="py-16 bg-white relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-background to-white pointer-events-none"></div>
+                    <div className="max-w-[1150px] mx-auto px-6 relative z-10">
                         <SectionTitle 
                             title="Hệ Thống Chi Nhánh" 
-                            subtitle="Mạng lưới văn phòng trải dài 3 miền Bắc - Trung - Nam, sẵn sàng hỗ trợ bạn." 
+                            subtitle="Mạng lưới văn phòng trải dài 3 miền Bắc - Trung - Nam, sẵn sàng hỗ trợ pháp lý mọi lúc, mọi nơi." 
                         />
 
-                        <div className="flex flex-col lg:flex-row gap-8 bg-white rounded-3xl p-2 shadow-card overflow-hidden border border-gray-100">
+                        {/* Updated to reduced padding and consolidated contact info */}
+                        <div className="flex flex-col lg:flex-row bg-white rounded-3xl shadow-card border border-gray-100 overflow-hidden">
                             
-                            <div className="flex-1 p-6 md:p-8">
-                                <div className="space-y-4">
-                                    {BRANCHES.map((branch) => {
-                                        const isActive = activeBranch === branch.id;
-                                        return (
-                                            <div 
-                                                key={branch.id}
-                                                onClick={() => setActiveBranch(branch.id)}
-                                                className={`cursor-pointer rounded-xl border-2 transition-all duration-300 p-6 ${isActive ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-100 hover:border-primary/30 bg-white'}`}
-                                            >
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <h3 className={`text-lg font-bold ${isActive ? 'text-primary' : 'text-secondary'}`}>
-                                                        {branch.title}
-                                                    </h3>
-                                                    {isActive && <span className="w-3 h-3 rounded-full bg-primary animate-pulse"></span>}
+                            {/* Branch List */}
+                            <div className="flex-1 p-5 lg:p-8 space-y-4">
+                                {BRANCHES.map((branch) => (
+                                    <div 
+                                        key={branch.id} 
+                                        className="rounded-2xl border border-gray-100 bg-background/50 hover:bg-white hover:border-primary/20 hover:shadow-lg transition-all duration-300 overflow-hidden group"
+                                    >
+                                        <div className="p-4 border-b border-gray-100 bg-white/50 flex justify-between items-center">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                                                    <Building className="w-5 h-5" />
                                                 </div>
-                                                
-                                                <div className="space-y-3">
-                                                    <div className="flex items-start gap-3">
-                                                        <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                                                        <p className="text-sm text-gray-700 font-medium">{branch.address}</p>
-                                                    </div>
-                                                    
-                                                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 pl-8">
-                                                        <span className="flex items-center gap-2 hover:text-primary transition-colors">
-                                                            <Phone className="w-4 h-4" />  {branch.hotline}
-                                                        </span>
-                                                        <span className="flex items-center gap-2 hover:text-primary transition-colors">
-                                                            <Mail className="w-4 h-4" /> {branch.email}
-                                                        </span>
-                                                        <span className="flex items-center gap-2 hover:text-primary transition-colors">
-                                                            <Phone className="w-4 h-4" /> {branch.phone}
-                                                        </span>
-                                                    </div>
+                                                <h3 className="text-lg font-bold text-secondary group-hover:text-primary transition-colors">
+                                                    {branch.title}
+                                                </h3>
+                                            </div>
+                                            {branch.tag && (
+                                                <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-primary text-white uppercase tracking-wider shadow-sm animate-pulse">
+                                                    {branch.tag}
+                                                </span>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="p-4 space-y-3">
+                                            {branch.locations.map((loc, idx) => (
+                                                <div key={idx} className={`relative ${idx > 0 ? 'pt-3 border-t border-gray-100/50' : ''}`}>
+                                                    <div className="flex gap-3">
+                                                        {/* Force colored bullet for all locations */}
+                                                        <div className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 bg-primary shadow-sm shadow-primary/30"></div>
+                                                        <div className="flex-1">
+                                                            {loc.name && (
+                                                                <h4 className="text-sm font-bold text-gray-800 mb-1">{loc.name}</h4>
+                                                            )}
+                                                            
+                                                            {/* Render single address */}
+                                                            {loc.address && (
+                                                                <div className="flex items-start gap-2 mb-2">
+                                                                    <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                                                                    <p className="text-sm text-gray-600 leading-relaxed">{loc.address}</p>
+                                                                </div>
+                                                            )}
 
-                                                    {branch.sub && (
-                                                        <div className="mt-4 pt-4 border-t border-gray-200 pl-8 space-y-2">
-                                                            {branch.sub.map((s, idx) => (
-                                                                <div key={idx} className="text-xs text-gray-500">
-                                                                    <strong className="text-primary">{s.label}:</strong> {s.address}
+                                                            {/* Render multiple addresses */}
+                                                            {loc.addresses && loc.addresses.map((addr, i) => (
+                                                                <div key={i} className="flex items-start gap-2 mb-2">
+                                                                    <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                                                                    <p className="text-sm text-gray-600 leading-relaxed">{addr}</p>
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                    )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                            ))}
+
+                                            {/* Common Contact Block for ALL Branches */}
+                                            {branch.commonContact && (
+                                                <div className="mt-4 pt-4 border-t border-gray-200/60 bg-primary/5 -mx-4 -mb-4 p-4">
+                                                     <div className="flex flex-col sm:flex-row gap-4 justify-between items-center text-sm">
+                                                         <a href={`tel:${branch.commonContact.hotline.replace('.','')}`} className="flex items-center gap-2 text-primary font-bold hover:underline">
+                                                            <Phone className="w-4 h-4" /> {branch.commonContact.hotline}
+                                                         </a>
+                                                         <a href={`tel:${branch.commonContact.phone.replace('.','')}`} className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                                                            <Phone className="w-4 h-4" /> {branch.commonContact.phone}
+                                                         </a>
+                                                         <a href={`mailto:${branch.commonContact.email}`} className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                                                            <Mail className="w-4 h-4" /> {branch.commonContact.email}
+                                                         </a>
+                                                     </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
-                            <div className="lg:w-5/12 bg-secondary relative min-h-[400px] lg:min-h-auto rounded-2xl overflow-hidden m-2">
+                            {/* Map Visual */}
+                            <div className="lg:w-5/12 bg-secondary relative min-h-[300px] lg:min-h-auto">
                                 <img 
                                     src="https://congtyluatacc.vn/wp-content/uploads/2025/11/z6933744955650_3e2b5ca7454622053833438356f7269a-removebg-preview.png" 
                                     alt="Bản đồ chi nhánh"
-                                    className="absolute inset-0 w-full h-full object-contain p-8 z-10"
+                                    className="absolute inset-0 w-full h-full object-contain p-8 z-10 opacity-90"
                                 />
                                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent z-20">
-                                    <p className="text-white text-center text-sm font-medium">
-                                        Kết nối mọi miền tổ quốc
-                                    </p>
+                                <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/80 to-transparent z-20">
+                                    <div className="text-white">
+                                        <p className="font-serif text-xl font-bold mb-2">Kết Nối Mọi Miền Tổ Quốc</p>
+                                        <p className="text-sm text-white/80 opacity-90">Hệ thống văn phòng trải dài, cam kết hỗ trợ pháp lý nhanh chóng và hiệu quả nhất cho khách hàng trên toàn quốc.</p>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </section>
@@ -932,5 +986,3 @@
 </body>
 
 </html>
-
-
